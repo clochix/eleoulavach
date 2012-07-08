@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <title>Memory</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--
+    éléoulavach - © Clochix 2012
+    Code Licence: GNU Affero General Public License http://www.fsf.org/licensing/licenses/agpl-3.0.html
+    Medias Licences: see in the code and CREDITS file
+    -->
+    <style>
+      body {
+        background: url('medias/grass.jpg');
+        max-width: 980px;
+        margin: auto;
+      }
+      #playground {
+        display: none;
+      }
+      footer {
+        margin: 10px 100px;
+        padding: 1px;
+        border-radius: 10px;
+        color: white;
+        text-shadow: 0px 0px 1px #000;
+        background-color: rgba(66, 66, 66, 0.6);
+        text-align: center;
+      }
+      footer a {
+        color: white;
+      }
+      .card {
+        float: left;
+        width: 200px;
+        margin: 20px;
+        text-align: center;
+        font-size: 42px;
+        -moz-transition: -moz-transform 3s ease;
+        -o-transition: -o-transform 3s ease;
+        -webkit-transition: -webkit-transform 3s ease;
+        -ms-transition: -ms-transform 3s ease;
+        transition: transform 3s ease;
+      }
+      .card.open {
+      }
+      .card.found {
+        -moz-transform: rotate(360deg) scale(0);
+        -o-transform: scale(0);
+        -webkit-transform: scale(0);
+        -ms-transform: scale(0);
+        transform: rotate(360deg) scale(0);
+      }
+      .card-inner {
+        position: relative;
+      }
+      .shutterLeft, .shutterRight {
+        position: absolute;
+        top: 0px;
+        width: 99px;/*-moz-calc(50% - 1px);*/
+        height: 100%;
+        -moz-transition: -moz-transform 3s ease;
+        -o-transition: -o-transform 3s ease;
+        -webkit-transition: -webkit-transform 3s ease;
+        -ms-transition: -ms-transform 3s ease;
+        transition: transform 3s ease;
+        background: url('medias/wood_pattern.png') repeat scroll 0 0;
+      }
+      .shutterLeft {
+        left: 0px;
+        border-width: 0px 1px 1px 0px;
+        border-style: solid;
+        border-color: black;
+      }
+      .shutterRight {
+        right: 0px;
+        border-width: 0px 0px 1px 1px;
+        border-style: solid;
+        border-color: black;
+      }
+      .card .shutterLeft {
+        -moz-transform-origin: left;
+        -o-transform-origin: left;
+        -webkit-transform-origin: left;
+        -ms-transform-origin: left;
+        transform-origin: left;
+      }
+      .card .shutterRight {
+        -moz-transform-origin: right;
+        -o-transform-origin: right;
+        -webkit-transform-origin: right;
+        -ms-transform-origin: right;
+        transform-origin: right;
+      }
+      .card.open .shutterLeft {
+        -moz-transform: skewY(30deg) rotateY(90deg);
+        -o-transform: skew(0, 30deg) rotateY(90deg);
+        -webkit-transform: skewY(30deg) rotateY(90deg);
+        -ms-transform: skewY(30deg) rotateY(90deg);
+        transform: skewY(30deg) rotateY(90deg);
+        -moz-transform-origin: left;
+        -o-transform-origin: left;
+        -webkit-transform-origin: left;
+        -ms-transform-origin: left;
+        transform-origin: left;
+      }
+      .card.open .shutterRight {
+        -moz-transform: skewY(-30deg) rotateY(90deg);
+        -o-transform: skew(0, -30deg) rotateY(90deg);
+        -webkit-transform: skewY(-30deg) rotateY(90deg);
+        -ms-transform: skewY(-30deg) rotateY(90deg);
+        transform: skewY(-30deg) rotateY(90deg);
+        -moz-transform-origin: right;
+        -o-transform-origin: right;
+        -webkit-transform-origin: right;
+        -ms-transform-origin: right;
+        transform-origin: right;
+      }
+      #template {
+        display: none;
+      }
+      /* clearfix : http://www.positioniseverything.net/easyclearing.html */
+      .clearfix:after {
+        content: "\0020";
+        display: block; 
+        height: 0; 
+        clear: both; 
+        visibility: hidden;
+        overflow: hidden;
+      }
+      .clearfix { display: inline-table; }
+    </style>
+  </head>
+  <body>
+    <div style="display: none">
+      <!-- Dirty hack to preload background image -->
+      <img src='medias/wood_pattern.png' />
+    </div>
+    <div class="card" id="template">
+      <div class="card-inner" >
+        <img src="/couac.png" width="200" height="200"/>
+        <div class="shutterLeft"></div>
+        <div class="shutterRight"></div>
+      </div>
+    </div>
+    <div id="playground" class="clearfix">
+    </div>
+    <footer>
+      <p>éléoulavach a été développé par <a href="http://clochix.net/">Clochix</a>. Le code est disponible sous la licence <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">GNU Affero General Public License</a>.</p>
+      <p>Les images et les sons utilisés sur le site sont des œuvres libres dont la liste figure <a href="CREDITS">ici</a>.</p>
+    </footer>
+    <script>
+      var sound,
+          cards = [
+      {
+        // cow
+        name: 'cow',
+        file: "medias/cow.png",
+        origin: "http://www.iconspedia.com/icon/cow-18720.html",
+        licence: "Free",
+        snd: {
+          src: 'medias/cow.ogg',
+          origin: 'http://soundbible.com/1567-Cow.html',
+          licence: 'http://creativecommons.org/licenses/by/3.0'
+        }
+      },
+      {
+        // sheep
+        name: 'sheep',
+        file: "medias/sheep.png",
+        origin: "http://www.pngfactory.net/png/19621/Sheep",
+        licence: "http://creativecommons.org/licenses/by-nc-nd/3.0/deed.fr",
+        snd: {
+          src: 'medias/sheep.ogg',
+          origin: 'http://www.universal-soundbank.com/volaille.htm',
+          licence: '?'
+        }
+      },
+      {
+        // pig
+        name: 'pig',
+        file: "medias/pig.png",
+        origin: "http://www.iconspedia.com/icon/pig-4248.html",
+        licence: "Free",
+        snd: {
+          src: 'medias/pig.ogg',
+          origin: 'http://soundbible.com/1220-Pig-Oinking.html',
+          licence: 'http://creativecommons.org/licenses/by/3.0'
+        }
+      },
+      {
+        // ass
+        name: 'ass',
+        file: "medias/ass.png",
+        origin: "http://www.softicons.com/free-icons/animal-icons/farm-icons-by-fixicon/ass-icon",
+        licence: "Free for personal use",
+        snd: {
+          src: 'medias/ass.ogg',
+          origin: 'http://www.universal-soundbank.com/volaille.htm',
+          licence: '?'
+        }
+      },
+      {
+        // chicken
+        name: 'chicken',
+        file: "medias/chicken.png",
+        origin: "http://www.softicons.com/free-icons/animal-icons/farm-icons-by-fixicon/chicken-icon",
+        licence: "Free for personal use",
+        snd: {
+          src: 'medias/chicken.ogg',
+          origin: 'http://www.universal-soundbank.com/volaille.htm',
+          licence: '?'
+        }
+      },
+      {
+        // duck
+        name: 'duck',
+        file: "medias/duck.png",
+        origin: "http://www.softicons.com/free-icons/animal-icons/farm-icons-by-fixicon/duck-icon",
+        licence: "Free for personal use",
+        snd: {
+          src: 'medias/duck.ogg',
+          origin: 'http://www.universal-soundbank.com/volaille.htm',
+          licence: '?'
+        }
+      }
+      ],
+      // Sounds
+      sounds = {
+        'grincement': {
+          src: 'medias/0302.ogg',
+          origin: 'http://www.lasonotheque.org',
+          licence: 'http://creativecommons.org/licenses/by-sa/2.0/fr/deed.fr'
+        },
+        'fanfare': {
+          src: 'medias/fanfare.ogg',
+          origin: 'http://www.universal-soundbank.com/volaille.htm',
+          licence: '?'
+        }
+      },
+      playground = document.querySelector('#playground');
+
+      // create AUDIO element to play sounds
+      for (var snd in sounds) {
+        if (sounds.hasOwnProperty(snd)) {
+          sound = sounds[snd];
+          sound.audio = document.createElement('audio');
+          sound.audio.src = sound.src;
+          sound.audio.preload = 'auto';
+        }
+      }
+      for (var i=0, l = cards.length; i < l; i++) {
+        if (cards[i].snd && !sounds[cards[i].name]) {
+          sound = {};
+          sound.audio = document.createElement('audio');
+          sound.audio.src = cards[i].snd.src;
+          sound.audio.preload = 'auto';
+          sounds[cards[i].name] = sound;
+        }
+      }
+
+      // Shuffle cards
+      cards = cards.concat(cards).sort(function() {return 0.5 - Math.random()});
+
+      // OnClick
+      var onClick = function() {
+        var that = this,
+        found = false;
+
+        if (this.classList.contains('open')) return;
+        
+        var opened = document.querySelectorAll('.card.open');
+        if (opened.length > 1) {
+          Array.prototype.forEach.call(opened, function (e) {
+            e.classList.remove('open');
+          });
+        }
+        this.classList.toggle('open');
+        sounds['grincement'].audio.play();
+
+        if (opened.length === 1) {
+          if (this.dataset.id === opened[0].dataset.id) {
+            var current = this;
+            found = true;
+            window.setTimeout(function() {
+              sounds['fanfare'].audio.play();
+              current.classList.remove('open');
+              current.classList.remove('notfound');
+              current.classList.add('found');
+              opened[0].classList.remove('open');
+              opened[0].classList.remove('notfound');
+              opened[0].classList.add('found');
+              current.removeEventListener('click', onClick);
+              opened[0].removeEventListener('click', onClick);
+              if (document.querySelectorAll('.card.notfound').length === 0) {
+                alert('Bravo !');
+              }
+            }, 3000);
+          }
+        }
+
+        if (!found && sounds[this.dataset.id]) {
+          window.setTimeout(function() {
+            sounds[that.dataset.id].audio.play();
+          }, 3000);
+        }
+      }
+
+      // Init display
+      var template = document.getElementById('template'),
+          card;
+      for (var i=0, l = cards.length; i < l; i++) {
+        card = template.cloneNode(true);
+        card.id = '';
+        card.setAttribute('data-id', cards[i].name);
+        card.addEventListener('click', onClick);
+        card.querySelector('img').src = cards[i].file;
+        card.classList.add('notfound');
+        playground.appendChild(card);
+      }
+
+      window.onload = function () {
+        playground.style.display = 'block';
+      };
+    </script>
+  </body>
+</html>
