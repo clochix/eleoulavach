@@ -44,6 +44,9 @@
         -ms-transition: -ms-transform 3s ease;
         transition: transform 3s ease;
       }
+      .card:focus, .card:active {
+        box-shadow: 0 0 5px #FF0;
+      }
       .card.open {
       }
       .card.found {
@@ -278,7 +281,7 @@
         found = false;
 
         if (this.classList.contains('open')) return;
-        
+
         var opened = document.querySelectorAll('.card.open');
         if (opened.length > 1) {
           Array.prototype.forEach.call(opened, function (e) {
@@ -301,7 +304,9 @@
               opened[0].classList.remove('notfound');
               opened[0].classList.add('found');
               current.removeEventListener('click', onClick);
+              current.removeEventListener('keydown', onKey);
               opened[0].removeEventListener('click', onClick);
+              opened[0].removeEventListener('keydown', onKey);
               if (document.querySelectorAll('.card.notfound').length === 0) {
                 alert('Bravo !');
               }
@@ -316,14 +321,23 @@
         }
       }
 
+      // Allow keyboard navigation
+      var onKey = function (e) {
+        if (e.keyCode === 13) { // Enter
+          onClick.call(this);
+        }
+      }
+
       // Init display
       var template = document.getElementById('template'),
           card;
       for (var i=0, l = cards.length; i < l; i++) {
         card = template.cloneNode(true);
         card.id = '';
+        card.tabIndex = 0;
         card.setAttribute('data-id', cards[i].name);
         card.addEventListener('click', onClick);
+        card.addEventListener('keydown', onKey);
         card.querySelector('img').src = cards[i].file;
         card.classList.add('notfound');
         playground.appendChild(card);
