@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
+  <head prefix="doap: http://usefulinc.com/ns/doap#">
     <meta charset="utf-8">
     <title>Memory</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="doap:bug-database" content="https://github.com/clochix/eleoulavach/issues">
     <!--
     éléoulavach - © Clochix 2012
     Code Licence: GNU Affero General Public License http://www.fsf.org/licensing/licenses/agpl-3.0.html
@@ -17,6 +18,7 @@
       }
       #playground {
         display: none;
+        margin: 150px auto;
       }
       footer {
         margin: 10px 100px;
@@ -148,6 +150,14 @@
     <footer>
       <p>éléoulavach a été développé par <a href="http://clochix.net/">Clochix</a>. Le code est disponible sous la licence <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">GNU Affero General Public License</a>.</p>
       <p>Les images et les sons utilisés sur le site sont des œuvres libres dont la liste figure <a href="CREDITS">ici</a>.</p>
+      <!-- Bugtracker -->
+      <div vocab="http://usefulinc.com/ns/doap#" typeof="Project" itemscope itemtype="http://usefulinc.com/ns/doap#Project">
+        <a property="bug-database" itemprop="bug-database" href="https://github.com/clochix/eleoulavach/issues">Signaler un problème</a>
+      </div>
+    </footer>
+
+    <!-- Github's Ribbon -->
+    <a href="https://github.com/clochix/eleoulavach"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
     </footer>
     <script>
       var sound,
