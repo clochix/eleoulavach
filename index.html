@@ -18,7 +18,7 @@
       }
       #playground {
         display: none;
-        margin: 150px auto;
+        margin: 15px auto;
       }
       footer {
         margin: 10px 100px;
@@ -134,6 +134,31 @@
         overflow: hidden;
       }
       .clearfix { display: inline-table; }
+      h1 {
+        font-size: 60px;
+        font-weight: bolder;
+        stroke: #FFF;
+        stroke-width: 1px;
+      }
+      .buttonReplay {
+        border: 2px solid #A2BF53;
+        border-radius: 5px;
+        padding: 10px;
+        box-shadow: 1px 1px 5px #888;
+        text-decoration: none;
+        color: #576F14;
+        font-weight: bold;
+        background-color: #E0F6A6;
+        background-image: -moz-linear-gradient(bottom , #B0F676 66%, #F0F6B6 99%);
+        background-image: -ms-linear-gradient(bottom , #B0F676 66%, #F0F6B6 99%);
+        background-image: -o-linear-gradient(bottom , #B0F676 66%, #F0F6B6 99%);
+        background-image: -webkit-linear-gradient(bottom , #B0F676 66%, #F0F6B6 99%);
+        background-image: linear-gradient(bottom , #B0F676 66%, #F0F6B6 99%);
+      }
+      .buttonReplay:active {
+        box-shadow: inset 5px 5px 5px #000;
+        text-shadow: 7px 7px 5px #000;
+      }
     </style>
   </head>
   <body>
@@ -148,8 +173,30 @@
         <div class="shutterRight"></div>
       </div>
     </div>
+    <h1>
+      <svg width="600" height="90" >
+        <defs>
+          <linearGradient id = "g1" x = "0%" y = "100%">
+            <stop stop-color = "red" offset = "0%"/>
+            <stop stop-color = "orange" offset = "17%"/>
+            <stop stop-color = "yellow" offset = "33%"/>
+            <stop stop-color = "green" offset = "50%"/>
+            <stop stop-color = "blue" offset = "67%"/>
+            <stop stop-color = "indigo" offset = "83%"/>
+            <stop stop-color = "violet" offset = "100%"/>
+          </linearGradient>
+        </defs>
+        <text id="rainbow" fill = "url(#g1)" font-size="60px">
+          <tspan x = "10" y = "80">
+            Éléoulavach ???
+          </tspan>
+        </text>
+      </svg>
+    </h1>
+
     <div id="playground" class="clearfix">
     </div>
+    <a class="buttonReplay" onClick="play()">Rejouer</a>
     <footer>
       <p>éléoulavach a été développé par <a href="http://clochix.net/">Clochix</a>. Le code est disponible sous la licence <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">GNU Affero General Public License</a>.</p>
       <p>Les images et les sons utilisés sur le site sont des œuvres libres dont la liste figure <a href="CREDITS">ici</a>.</p>
@@ -272,9 +319,6 @@
         }
       }
 
-      // Shuffle cards
-      cards = cards.concat(cards).sort(function() {return 0.5 - Math.random()});
-
       // OnClick
       var onClick = function() {
         var that = this,
@@ -328,20 +372,31 @@
         }
       }
 
-      // Init display
-      var template = document.getElementById('template'),
-          card;
-      for (var i=0, l = cards.length; i < l; i++) {
-        card = template.cloneNode(true);
-        card.id = '';
-        card.tabIndex = 0;
-        card.setAttribute('data-id', cards[i].name);
-        card.addEventListener('click', onClick);
-        card.addEventListener('keydown', onKey);
-        card.querySelector('img').src = cards[i].file;
-        card.classList.add('notfound');
-        playground.appendChild(card);
+      var play = function() {
+        // Init display
+        var template = document.getElementById('template'),
+        card;
+        // Shuffle cards
+        var currentCards = cards.concat(cards).sort(function() {return 0.5 - Math.random()});
+
+        while (playground.firstChild) {
+          playground.removeChild(playground.firstChild);
+        }
+
+        for (var i=0, l = currentCards.length; i < l; i++) {
+          card = template.cloneNode(true);
+          card.id = '';
+          card.tabIndex = 0;
+          card.setAttribute('data-id', currentCards[i].name);
+          card.addEventListener('click', onClick);
+          card.addEventListener('keydown', onKey);
+          card.querySelector('img').src = currentCards[i].file;
+          card.classList.add('notfound');
+          playground.appendChild(card);
+        }
       }
+
+      play();
 
       window.onload = function () {
         playground.style.display = 'block';
