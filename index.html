@@ -43,6 +43,7 @@
         -webkit-transition: -webkit-transform 3s ease;
         -ms-transition: -ms-transform 3s ease;
         transition: transform 3s ease;
+        box-shadow: 0 0 10px #000;
       }
       .card:focus, .card:active {
         box-shadow: 0 0 5px #FF0;
@@ -139,11 +140,13 @@
         font-weight: bolder;
         stroke: #FFF;
         stroke-width: 1px;
+        margin-right: 300px;
       }
       .buttonReplay {
         border: 2px solid #A2BF53;
         border-radius: 5px;
         padding: 10px;
+        margin-left: 40px;
         box-shadow: 1px 1px 5px #888;
         text-decoration: none;
         color: #576F14;
@@ -159,6 +162,22 @@
         box-shadow: inset 5px 5px 5px #000;
         text-shadow: 7px 7px 5px #000;
       }
+      #controls {
+        float: right;
+        margin-top: 50px;
+        margin-right: 150px;
+      }
+      #volumeEmbeder {
+        width: 30px;
+        overflow: hidden;
+        margin-top: -104px;
+      }
+      #volume {
+        margin-left: -100px;
+        height: 110px;
+        width: 160px;
+        visibility: hidden;
+      }
     </style>
   </head>
   <body>
@@ -171,6 +190,12 @@
         <img src="/couac.png" width="200" height="200"/>
         <div class="shutterLeft"></div>
         <div class="shutterRight"></div>
+      </div>
+    </div>
+    <div id="controls">
+      <a class="buttonReplay" onClick="play()">Rejouer</a>
+      <div id="volumeEmbeder">
+        <video id="volume" controls />
       </div>
     </div>
     <h1>
@@ -196,7 +221,7 @@
 
     <div id="playground" class="clearfix">
     </div>
-    <a class="buttonReplay" onClick="play()">Rejouer</a>
+
     <footer>
       <p>éléoulavach a été développé par <a href="http://clochix.net/">Clochix</a>. Le code est disponible sous la licence <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">GNU Affero General Public License</a>.</p>
       <p>Les images et les sons utilisés sur le site sont des œuvres libres dont la liste figure <a href="CREDITS">ici</a>.</p>
@@ -298,7 +323,8 @@
           licence: '?'
         }
       },
-      playground = document.querySelector('#playground');
+      playground = document.querySelector('#playground'),
+      vol = document.querySelector('#volume');
 
       // create AUDIO element to play sounds
       for (var snd in sounds) {
@@ -333,6 +359,7 @@
           });
         }
         this.classList.toggle('open');
+        sounds['grincement'].audio.volume = vol.volume;
         sounds['grincement'].audio.play();
 
         if (opened.length === 1) {
@@ -340,6 +367,7 @@
             var current = this;
             found = true;
             window.setTimeout(function() {
+              sounds['fanfare'].audio.volume = vol.volume;
               sounds['fanfare'].audio.play();
               current.classList.remove('open');
               current.classList.remove('notfound');
@@ -360,6 +388,7 @@
 
         if (!found && sounds[this.dataset.id]) {
           window.setTimeout(function() {
+            sounds[that.dataset.id].audio.volume = vol.volume;
             sounds[that.dataset.id].audio.play();
           }, 3000);
         }
@@ -400,6 +429,9 @@
 
       window.onload = function () {
         playground.style.display = 'block';
+        vol.play();
+        vol.volume = .5;
+        vol.style.visibility = 'visible';
       };
     </script>
   </body>
