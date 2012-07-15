@@ -142,11 +142,10 @@
         stroke-width: 1px;
         margin-right: 300px;
       }
-      .buttonReplay {
+      .button {
         border: 2px solid #A2BF53;
         border-radius: 5px;
         padding: 10px;
-        margin-left: 40px;
         box-shadow: 1px 1px 5px #888;
         text-decoration: none;
         color: #576F14;
@@ -158,9 +157,12 @@
         background-image: -webkit-linear-gradient(bottom , #B0F676 66%, #F0F6B6 99%);
         background-image: linear-gradient(bottom , #B0F676 66%, #F0F6B6 99%);
       }
-      .buttonReplay:active {
+      .buttonReplay {
+        margin-left: 40px;
+      }
+      .button:active {
         box-shadow: inset 5px 5px 5px #000;
-        text-shadow: 7px 7px 5px #000;
+        text-shadow: 5px 5px 5px #000;
       }
       #controls {
         float: right;
@@ -178,12 +180,45 @@
         width: 160px;
         visibility: hidden;
       }
+      #message {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 0px;
+        text-align: center;
+        font-size: 0%;
+        font-weight: bold;
+        color: white;
+        height: 0px;
+        -moz-transition-duration: 2s;
+        -o-transition-duration: 2s;
+        -webkit-transition-duration: 2s;
+        -ms-transition-duration: 2s;
+        transition-duration: 2s;
+      }
+      #message.displayed {
+        font-size: 150%;
+        height: 20px;
+        padding: 10px 0px;
+      }
+      #message.info {
+        background-color: #0C0;
+      }
+      #message.warning {
+        background-color: #FC0;
+      }
+      #message.error {
+        background-color: #F00;
+      }
     </style>
   </head>
   <body>
     <div style="display: none">
       <!-- Dirty hack to preload background image -->
       <img src='medias/wood_pattern.png' />
+    </div>
+    <div id="message">
     </div>
     <div class="card" id="template">
       <div class="card-inner" >
@@ -324,8 +359,15 @@
         }
       },
       playground = document.querySelector('#playground'),
-      vol = document.querySelector('#volume');
+      vol = document.querySelector('#volume'),
+      msg = document.querySelector('#message');
 
+      var displayMessage = function(message, type) {
+        type = type || 'info';
+        msg.className = 'displayed ' + type;
+        msg.innerHTML = message;
+        window.setTimeout(function() {msg.className = ''; msg.innerHTML = ''}, 5000);
+      }
       // create AUDIO element to play sounds
       for (var snd in sounds) {
         if (sounds.hasOwnProperty(snd)) {
@@ -380,7 +422,7 @@
               opened[0].removeEventListener('click', onClick);
               opened[0].removeEventListener('keydown', onKey);
               if (document.querySelectorAll('.card.notfound').length === 0) {
-                alert('Bravo !');
+                displayMessage('Bravo !');
               }
             }, 3000);
           }
