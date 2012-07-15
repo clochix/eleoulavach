@@ -1,0 +1,17 @@
+{
+  "version": "0.1",
+  "name": "Éléouvavach",
+  "description": "Memory game",
+  "developer": {
+    "name": "Clochix",
+    "url": "http://clochix.net"
+  },
+  "installs_allowed_from": ["*"],
+  "launch_path": "/memory/index.html",
+  "locales": {
+    "fr": {
+      "description": "Améliorez votre mémoire en trouvant les paires d'animaux"
+    }
+  },
+  "default_locale": "fr"
+}

@@ -228,7 +228,8 @@
       </div>
     </div>
     <div id="controls">
-      <a class="buttonReplay" onClick="play()">Rejouer</a>
+      <a class="button buttonReplay" onClick="play()">Rejouer</a>
+      <a class="button buttonInstall" onClick="install()">Installer</a>
       <div id="volumeEmbeder">
         <video id="volume" controls />
       </div>
@@ -464,6 +465,17 @@
           card.querySelector('img').src = currentCards[i].file;
           card.classList.add('notfound');
           playground.appendChild(card);
+        }
+      }
+
+      var install = function() {
+        var request = navigator.mozApps.install("http://clochix.net/memory/manifest.webapp");
+        request.onerror = function () {
+          displayMessage('Une erreur est survenue, consultez la console pour plus de précisions');
+          console.log(this.error, 'error');
+        }
+        request.onsuccess = function () {
+          displayMessage("L'application a été installée");
         }
       }
 
