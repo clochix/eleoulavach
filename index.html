@@ -1,8 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" >
+<!--
+<html lang="fr" manifest="cache.appcache">
+-->
   <head prefix="doap: http://usefulinc.com/ns/doap#">
     <meta charset="utf-8">
-    <title>Memory</title>
+    <title>Éléoulavach</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta property="doap:bug-database" content="https://github.com/clochix/eleoulavach/issues">
     <!--
@@ -34,7 +37,6 @@
       }
       .card {
         float: left;
-        width: 200px;
         margin: 20px;
         text-align: center;
         font-size: 42px;
@@ -63,7 +65,7 @@
       .shutterLeft, .shutterRight {
         position: absolute;
         top: 0px;
-        width: 99px;/*-moz-calc(50% - 1px);*/
+        width: 50%;/*-moz-calc(50% - 1px);*/
         height: 100%;
         -moz-transition: -moz-transform 3s ease;
         -o-transition: -o-transform 3s ease;
@@ -181,9 +183,10 @@
         visibility: hidden;
       }
       #message {
-        position: absolute;
+        position: fixed;
         top: 0;
         left: 0;
+        z-index: 1;
         width: 100%;
         padding: 0px;
         text-align: center;
@@ -222,14 +225,14 @@
     </div>
     <div class="card" id="template">
       <div class="card-inner" >
-        <img src="/couac.png" width="200" height="200"/>
+        <img src="" width="200" height="200"/>
         <div class="shutterLeft"></div>
         <div class="shutterRight"></div>
       </div>
     </div>
     <div id="controls">
-      <a class="button buttonReplay" onClick="play()">Rejouer</a>
-      <a class="button buttonInstall" onClick="install()">Installer</a>
+      <a class="button buttonReplay">Rejouer</a>
+      <a class="button buttonInstall">Installer</a>
       <div id="volumeEmbeder">
         <video id="volume" controls />
       </div>
@@ -268,9 +271,9 @@
     </footer>
 
     <!-- Github's Ribbon -->
-    <a href="https://github.com/clochix/eleoulavach"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
-    </footer>
+    <a href="https://github.com/clochix/eleoulavach"><img style="position: absolute; top: 0; right: 0; border: 0;" src="medias/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
     <script>
+    (function() {
       var sound,
           cards = [
       {
@@ -363,6 +366,13 @@
       vol = document.querySelector('#volume'),
       msg = document.querySelector('#message');
 
+      /**
+       * displayMessage Display a message in a ribbon on top
+       * @param {String} message HTML content of the message
+       * @param {String} [type]  info (default) | warning | error
+       *
+       * @returns {void}
+       */
       var displayMessage = function(message, type) {
         type = type || 'info';
         msg.className = 'displayed ' + type;
@@ -388,7 +398,7 @@
         }
       }
 
-      // OnClick
+      // On card click
       var onClick = function() {
         var that = this,
         found = false;
@@ -444,6 +454,7 @@
         }
       }
 
+      // Display cards
       var play = function() {
         // Init display
         var template = document.getElementById('template'),
@@ -468,25 +479,41 @@
         }
       }
 
+      // Install Application with Firefox
       var install = function() {
-        var request = navigator.mozApps.install("http://memory.clochix.net/manifest.webapp");
-        request.onerror = function () {
-          displayMessage('Une erreur est survenue, consultez la console pour plus de précisions');
-          console.log(this.error, 'error');
+        if (typeof navigator.mozApp === 'function') {
+          var request = navigator.mozApps.install("http://memory.clochix.net/manifest.webapp");
+          request.onerror = function () {
+            displayMessage('Une erreur est survenue, consultez la console pour plus de précisions');
+            console.log(this.error, 'error');
+          }
+          request.onsuccess = function () {
+            displayMessage("L'application a été installée");
+          }
+        } else {
+          displayMessage("Désolé, l'installation n'est disponible que dans Firefox", 'warning');
         }
-        request.onsuccess = function () {
-          displayMessage("L'application a été installée");
-        }
+      }
+
+      // Add event listeners
+      document.querySelector('.buttonReplay').addEventListener('click', play);
+      if (typeof navigator.mozApp === 'function') {
+        document.querySelector('.buttonInstall').addEventListener('click', install);
+      } else {
+        document.querySelector('.buttonInstall').style.display = 'none';
       }
 
       play();
 
       window.onload = function () {
-        playground.style.display = 'block';
+        // hack for volume controller
         vol.play();
         vol.volume = .5;
         vol.style.visibility = 'visible';
+        // display playground
+        playground.style.display = 'block';
       };
+    })()
     </script>
   </body>
 </html>
