@@ -4,10 +4,10 @@
   "description": "Memory game",
   "developer": {
     "name": "Clochix",
-    "url": "http://clochix.net"
+    "url": "http://memory.clochix.net"
   },
   "installs_allowed_from": ["*"],
-  "launch_path": "/memory/index.html",
+  "launch_path": "/index.html",
   "locales": {
     "fr": {
       "description": "Améliorez votre mémoire en trouvant les paires d'animaux"

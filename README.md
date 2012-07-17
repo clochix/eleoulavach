@@ -5,7 +5,7 @@ Just an easy Memory game.
 
 ## Demo
 
-http://clochix.net/memory/
+http://memory.clochix.net/
 
 ## TODO
 

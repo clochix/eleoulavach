@@ -469,7 +469,7 @@
       }
 
       var install = function() {
-        var request = navigator.mozApps.install("http://clochix.net/memory/manifest.webapp");
+        var request = navigator.mozApps.install("http://memory.clochix.net/manifest.webapp");
         request.onerror = function () {
           displayMessage('Une erreur est survenue, consultez la console pour plus de précisions');
           console.log(this.error, 'error');
