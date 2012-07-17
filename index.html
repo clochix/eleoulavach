@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="fr" >
+<html >
 <!--
-<html lang="fr" manifest="cache.appcache">
+<html manifest="cache.appcache">
 -->
   <head prefix="doap: http://usefulinc.com/ns/doap#">
     <meta charset="utf-8">
@@ -13,6 +13,9 @@
     Code Licence: GNU Affero General Public License http://www.fsf.org/licensing/licenses/agpl-3.0.html
     Medias Licences: see in the code and CREDITS file
     -->
+    <script type="text/javascript" src="lib/webL10n/l10n.js"></script>
+    <link rel="resource" type="application/l10n" href="locales.ini" />
+
     <style>
       body {
         background: url('medias/grass.jpg');
@@ -231,8 +234,8 @@
       </div>
     </div>
     <div id="controls">
-      <a class="button buttonReplay">Rejouer</a>
-      <a class="button buttonInstall">Installer</a>
+      <a class="button buttonReplay" data-l10n-id="replay">Rejouer</a>
+      <a class="button buttonInstall" data-l10n-id="install">Installer</a>
       <div id="volumeEmbeder">
         <video id="volume" controls />
       </div>
@@ -262,11 +265,11 @@
     </div>
 
     <footer>
-      <p>éléoulavach a été développé par <a href="http://clochix.net/">Clochix</a>. Le code est disponible sous la licence <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">GNU Affero General Public License</a>.</p>
-      <p>Les images et les sons utilisés sur le site sont des œuvres libres dont la liste figure <a href="CREDITS">ici</a>.</p>
+      <p data-l10n-id="credit1">éléoulavach a été développé par <a href="http://clochix.net/">Clochix</a>. Le code est disponible sous la licence <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">GNU Affero General Public License</a>.</p>
+      <p data-l10n-id="credit2">Les images et les sons utilisés sur le site sont des œuvres libres dont la liste figure <a href="CREDITS">ici</a>.</p>
       <!-- Bugtracker -->
       <div vocab="http://usefulinc.com/ns/doap#" typeof="Project" itemscope itemtype="http://usefulinc.com/ns/doap#Project">
-        <a property="bug-database" itemprop="bug-database" href="https://github.com/clochix/eleoulavach/issues">Signaler un problème</a>
+        <a property="bug-database" itemprop="bug-database" href="https://github.com/clochix/eleoulavach/issues" data-l10n-id="report">Signaler un problème</a>
       </div>
     </footer>
 
@@ -366,6 +369,7 @@
       vol = document.querySelector('#volume'),
       msg = document.querySelector('#message');
 
+      var _ = document.webL10n.get;
       /**
        * displayMessage Display a message in a ribbon on top
        * @param {String} message HTML content of the message
@@ -433,7 +437,7 @@
               opened[0].removeEventListener('click', onClick);
               opened[0].removeEventListener('keydown', onKey);
               if (document.querySelectorAll('.card.notfound').length === 0) {
-                displayMessage('Bravo !');
+                displayMessage(_('messageSuccess'));
               }
             }, 3000);
           }
@@ -484,14 +488,14 @@
         if (typeof navigator.mozApp === 'function') {
           var request = navigator.mozApps.install("http://memory.clochix.net/manifest.webapp");
           request.onerror = function () {
-            displayMessage('Une erreur est survenue, consultez la console pour plus de précisions');
+            displayMessage(_('messageInstallError'));
             console.log(this.error, 'error');
           }
           request.onsuccess = function () {
-            displayMessage("L'application a été installée");
+            displayMessage(_('messageInstallError'));
           }
         } else {
-          displayMessage("Désolé, l'installation n'est disponible que dans Firefox", 'warning');
+          displayMessage(_('messageInstallFirefox'), 'warning');
         }
       }
 
